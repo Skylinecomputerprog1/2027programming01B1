@@ -1,5 +1,7 @@
 ## Calc-Boy
 
+![Calculator](https://github.com/Skylinecomputerprog1/2027programming01B1/blob/main/images/Calc01.png?raw=true)
+
 ## Overview
 [Write 2–3 sentences explaining what you are building
 and what a user can do with it.]
