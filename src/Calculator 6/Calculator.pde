@@ -1,10 +1,11 @@
 // Dylan Codell | 15 Sept 2026 |
+
 Button[] numButtons = new Button[10];
 Button[] opButtons = new Button[8];
 Button[] dpadButtons = new Button[4];
 
 float l, r, result;
-char op, dpad;
+char op;
 boolean left, newEntry;
 String displayVal;
 
@@ -33,21 +34,20 @@ void setup() {
 
   // Operator buttons
   opButtons[0] = new Button(115, 640, 100, 60, '.');
-  opButtons[3] = new Button(335, 640, 100, 60, '±');
-  opButtons[5] = new Button(445, 430, 100, 60, '÷');
-  opButtons[4] = new Button(445, 500, 100, 60, '×');
   opButtons[1] = new Button(445, 570, 100, 60, '-');
   opButtons[2] = new Button(445, 640, 100, 60, '+');
+  opButtons[3] = new Button(335, 640, 100, 60, '±');
+  opButtons[4] = new Button(445, 500, 100, 60, '×');
+  opButtons[5] = new Button(445, 430, 100, 60, '÷');
   opButtons[6] = new Button(445, 290, 100, 60, 'C');
   opButtons[7] = new Button(335, 360, 100, 60, '=');
 
   // D-Pad Buttons
   dpadButtons[0] = new Button(130, 240, 60, 60, '%');
   dpadButtons[1] = new Button(130, 360, 60, 60, '²');
-  dpadButtons[2] = new Button(75, 300, 60, 60, 'a');
+  dpadButtons[2] = new Button(75, 300, 60, 60, 'a');  // currently unused
   dpadButtons[3] = new Button(185, 300, 60, 60, '√');
 }
-
 
 void draw() {
   background(#E6E6E6);
@@ -59,32 +59,26 @@ void draw() {
   rectMode(CORNER);
   rect(20, 15, 510, 680);
 
-
-  // CALC BOY TITLE
+  // Title
   fill(#30343A);
   noStroke();
   textAlign(CENTER, CENTER);
   textSize(30);
   text("CALC-BOY", 275, 45);
 
-
-
   drawDisplay();
 
-
-  // D-Pad Buttons thingy
+  // D-Pad Buttons
   for (int i = 0; i < dpadButtons.length; i++) {
     dpadButtons[i].display();
     dpadButtons[i].mouseOver(mouseX, mouseY);
   }
-
 
   // Number Buttons
   for (int i = 0; i < numButtons.length; i++) {
     numButtons[i].display();
     numButtons[i].mouseOver(mouseX, mouseY);
   }
-
 
   // Operator Buttons
   for (int i = 0; i < opButtons.length; i++) {
@@ -93,22 +87,18 @@ void draw() {
   }
 }
 
-
 void drawDisplay() {
   rectMode(CENTER);
 
-  // Screen stuff
   fill(#30353A);
   stroke(#202428);
   strokeWeight(7);
   rect(275, 145, 470, 105);
 
-
   fill(#A8BA91);
   stroke(#11151A);
   strokeWeight(5);
   rect(275, 145, 440, 80);
-
 
   fill(#15191A);
   noStroke();
@@ -117,51 +107,30 @@ void drawDisplay() {
   text(displayVal, 490, 155);
 }
 
-
 void mouseReleased() {
+
+  // Number Buttons
   for (int i = 0; i < numButtons.length; i++) {
-    if (numButtons[i].hover == true) {
-      handleEvent(numButtons[i].val,true);
-    }    
+    if (numButtons[i].hover) {
+      handleEvent(numButtons[i].val, true);
+    }
   }
+
   // Operator Buttons
   for (int i = 0; i < opButtons.length; i++) {
     if (opButtons[i].hover) {
-      handleEvent(opButtons[i].val,true);
-
+      handleEvent(opButtons[i].val, false);
     }
   }
-  // Dpad Buttons
+
+  // D-Pad Buttons
   for (int i = 0; i < dpadButtons.length; i++) {
     if (dpadButtons[i].hover) {
-      char clicked = dpadButtons[i].val;
-
-      if (clicked == '=') {
-        performCalc();
-      } else if (clicked == '²') {
-        //squares the number
-        if (left == true) {
-          l = sq(l);
-          displayVal = str(l);
-        } else {
-          r = sq(r);
-          displayVal = str(r);
-        }
-      } else if (clicked == '√') {
-        //square roots the number
-        if (left == true) {
-          l = sqrt(l);
-          displayVal = str(l);
-        } else {
-          r = sqrt(r);
-          displayVal = str(r);
-        }
-      }
+      handleEvent(dpadButtons[i].val, false);
     }
   }
 
-
-  // Display Variables
+  // Debug print
   println("L:" + l);
   println("R:" + r);
   println("Result:" + result);
@@ -169,57 +138,52 @@ void mouseReleased() {
   println("Op:" + op);
 }
 
-
 void performCalc() {
+  if (op == '+') result = l + r;
+  else if (op == '-') result = l - r;
+  else if (op == '÷') result = l / r;
+  else if (op == '×') result = l * r;
+  else return;
 
-  if (op == '+') {
-    result = l + r;
-  } else if (op == '-') {
-    result = l - r;
-  } else if (op == '÷') {
-    result = l / r;
-  } else if (op == '×') {
-    result = l * r;
-  } else {
-    return;
-  }
   displayVal = str(result);
-  left = !left;
+  left = true;
   l = result;
 }
 
 void keyPressed() {
   println("keyCode: "+ keyCode);
-  // Number Buttons
-if(keyCode == 49 || keyCode == 97){
-handleEvent('1',true);
-} else if(keyCode == 50 || keyCode == 98){
-handleEvent('2',true);
-} else if(keyCode == 51 || keyCode == 99){
-handleEvent('3',true);
-} else if(keyCode == 52 || keyCode == 100){
-handleEvent('4',true);
-} else if(keyCode == 53 || keyCode == 101){
-handleEvent('5',true);
-} else if(keyCode == 54 || keyCode == 102){
-handleEvent('6',true);
-} else if(keyCode == 55 || keyCode == 103){
-handleEvent('7',true);
-} else if(keyCode == 56 || keyCode == 104){
-handleEvent('8',true);
-} else if(keyCode == 57 || keyCode == 105){
-handleEvent('9',true);
-} else if(keyCode == 48 || keyCode == 96){
-handleEvent('0',true);
-// Operator buttons
-}else if(keyCode == 10 || keyCode == 10){
-handleEvent('=',false);
-}
+
+  // Number keys
+  if (keyCode == 49 || keyCode == 97) handleEvent('1', true);
+  else if (keyCode == 50 || keyCode == 98) handleEvent('2', true);
+  else if (keyCode == 51 || keyCode == 99) handleEvent('3', true);
+  else if (keyCode == 52 || keyCode == 100) handleEvent('4', true);
+  else if (keyCode == 53 || keyCode == 101) handleEvent('5', true);
+  else if (keyCode == 54 || keyCode == 102) handleEvent('6', true);
+  else if (keyCode == 55 || keyCode == 103) handleEvent('7', true);
+  else if (keyCode == 56 || keyCode == 104) handleEvent('8', true);
+  else if (keyCode == 57 || keyCode == 105) handleEvent('9', true);
+  else if (keyCode == 48 || keyCode == 96) handleEvent('0', true);
+
+  // Operators
+  else if (keyCode == 61 || keyCode == 107) handleEvent('+', false);
+  else if (keyCode == 45 || keyCode == 109) handleEvent('-', false);
+  else if (keyCode == 106 || keyCode == 88) handleEvent('×', false);
+  else if (keyCode == 47 || keyCode == 111) handleEvent('÷', false);
+  else if (keyCode == 8 || keyCode == 110) handleEvent('C', false);
+  else if (keyCode == 10) handleEvent('=', false);
+  else if (keyCode == 46 || keyCode == 110) handleEvent('.', false);
+  else if (keyCode == 32) handleEvent('±',false);
+  //Dpads
+   else if (keyCode == 83) handleEvent('²', false);
+   else if (keyCode == 87) handleEvent('%', false);
+   else if (keyCode == 68) handleEvent('√', false);
+   else if (keyCode == 65) handleEvent('a', false);
 }
 
 void handleEvent(char val, boolean isNum) {
-  if (isNum == true) {
-    // Do number stuff
+
+  if (isNum) {
     String digit = str(val);
 
     if (newEntry || displayVal.equals("0.0")) {
@@ -228,43 +192,89 @@ void handleEvent(char val, boolean isNum) {
     } else {
       displayVal += digit;
     }
-    if (left) {
-      l = float(displayVal);
-    } else {
-      r = float(displayVal);
-    }
-  } else {
-    // Do operator stuff
-          char clicked = val;
 
-      if (clicked == '=') {
-        performCalc();
-      } else if (clicked == '+' || clicked == '-' || clicked == '×' || clicked == '÷') {
-        op = clicked;
-        left = false;
-        newEntry = true;
-        displayVal = str(op);
-      } else if (clicked == '±') {
-        if (left == true) {
-          l *= -1;
-          displayVal = str(l);
-        } else {
-          r *= -1;
-          displayVal = str(r);
-        }
-      } else if (clicked == 'C') {
-        // reset all variables
-        l = 0.0;
-        r = 0.0;
-        result = 0.0;
-        left = true;
-        newEntry = true;
-        op = ' ';
-        displayVal = "0.0";
-      } else if (clicked == '.') {
-        if (!displayVal.contains(".")) {
-          displayVal += '.';
-        }
+    if (left) l = float(displayVal);
+    else r = float(displayVal);
+  }
+
+  else {
+    char clicked = val;
+
+    if (clicked == '=') {
+      performCalc();
+    }
+
+    else if (clicked == '+' || clicked == '-' || clicked == '×' || clicked == '÷') {
+      op = clicked;
+      left = false;
+      newEntry = true;
+      displayVal = str(op);
+    }
+
+    else if (clicked == '±') {
+      if (left) {
+        l *= -1;
+        displayVal = str(l);
+      } else {
+        r *= -1;
+        displayVal = str(r);
       }
+    }
+
+    else if (clicked == 'C') {
+      l = 0.0;
+      r = 0.0;
+      result = 0.0;
+      left = true;
+      newEntry = true;
+      op = ' ';
+      displayVal = "0.0";
+    }
+
+    else if (clicked == '.') {
+      if (!displayVal.contains(".")) {
+        displayVal += '.';
+      }
+    }
+
+    else if (clicked == '²') {
+      if (left) {
+        l = sq(l);
+        displayVal = str(l);
+      } else {
+        r = sq(r);
+        displayVal = str(r);
+      }
+    }
+
+    else if (clicked == '√') {
+      if (left) {
+        l = sqrt(l);
+        displayVal = str(l);
+      } else {
+        r = sqrt(r);
+        displayVal = str(r);
+      }
+    }
+
+    else if (clicked == '%') {
+      if (left) {
+        l = l / 100.0;
+        displayVal = str(l);
+      } else {
+        r = r / 100.0;
+        displayVal = str(r);
+      }
+    }
+    
+        else if (clicked == 'a') {
+      if (left) {
+        l = abs(l);
+        displayVal = str(l);
+      } else {
+        r = abs(r);
+        displayVal = str(r);
+      }
+    }
   }
 }
