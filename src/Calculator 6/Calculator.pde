@@ -45,7 +45,7 @@ void setup() {
   // D-Pad Buttons
   dpadButtons[0] = new Button(130, 240, 60, 60, '%');
   dpadButtons[1] = new Button(130, 360, 60, 60, '²');
-  dpadButtons[2] = new Button(75, 300, 60, 60, 'a');  // currently unused
+  dpadButtons[2] = new Button(75, 300, 60, 60, 'a');
   dpadButtons[3] = new Button(185, 300, 60, 60, '√');
 }
 
@@ -104,7 +104,7 @@ void drawDisplay() {
   noStroke();
   textAlign(RIGHT, CENTER);
   textSize(36);
-  text(displayVal, 490, 155);
+  text(displayVal, 480, 150); 
 }
 
 void mouseReleased() {
@@ -130,7 +130,7 @@ void mouseReleased() {
     }
   }
 
-  // Debug print
+
   println("L:" + l);
   println("R:" + r);
   println("Result:" + result);
@@ -185,12 +185,15 @@ void handleEvent(char val, boolean isNum) {
 
   if (isNum) {
     String digit = str(val);
-
+    // stops the numbers from going off the screen
     if (newEntry || displayVal.equals("0.0")) {
       displayVal = digit;
       newEntry = false;
     } else {
-      displayVal += digit;
+
+      if (displayVal.length() < 14) { 
+        displayVal += digit;
+      }
     }
 
     if (left) l = float(displayVal);
